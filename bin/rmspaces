@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# ls | while read -r FILE
+for FILE in *
+do
+  newFILE=`echo $FILE | tr ' ' '_'`
+  if [ "$newFILE" != "$FILE" ]; then
+    mv -v "$FILE" "$newFILE"
+  fi
+done
+exit 0

@@ -1,0 +1,4 @@
+# przegladanie historii basha za pomocą PageUp i PageDown z częściowo
+# wpisanymi komendami
+"\e[5~": history-search-backward
+"\e[6~": history-search-forward

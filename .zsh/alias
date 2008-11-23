@@ -1,0 +1,82 @@
+#!/bin/zsh
+#
+# change default behaviors for the basics
+
+. ~/.zsh/vars
+
+# Host specific aliases
+case $HOSTNAME in
+	giGnote)
+		alias outside="weatherget -s BEXX0008 -m"
+	;;
+	*)
+		alias outside="weatherget -s BEXX0008 -m"
+	;;
+esac
+
+alias mv="mv -v --backup=existing"
+alias mmv="noglob zmv -W"
+alias rm="rm -v"
+alias cp="cp -v"
+alias firefox="aoss firefox"
+alias mplayer="mplayer -idx"
+alias wget="wget --timeout 10"
+alias grep="grep --color=auto"
+#alias irb="irb --simple-prompt"
+
+#function call
+alias ex=extract_archive
+
+# abreviations
+
+# basics
+alias c="clear"
+alias l="cd ."
+alias ll='ls -ahl --color | more; echo "\e[1;32m --[\e[1;34m Dirs:\e[1;36m `ls -al | egrep \"^drw\" | wc -l` \e[1;32m|\e[1;35m Files: \e[1;31m`ls -al | egrep -v \"^drw\" | grep -v total | wc -l` \e[1;32m]--"'
+#alias e="emacs -nw"
+alias v="vim"
+alias wh="when ci --past=0 --future=3"
+alias cdc="cd; clear"
+
+# more interesting aliases :D
+alias boggle='echo "No no no, Mr. Brian Braun-Duin"'
+alias conngig='sudo iwlist wlan0 scan && sudo netcfg2 wireless-gigamo'
+alias connmarina='sudo iwlist wlan0 scan && sudo netcfg2 wireless-marina'
+
+# auto open images
+alias -s {jpg,JPG,jpeg,JPEG,png,PNG,gif,GIF}="mirage"
+
+# auto open movies
+alias -s {mpg,mpeg,avi,ogm,wmv,m4v,mp4,mov}="mplayer -idx"
+
+# auto open audio
+alias -s {mp3,ogg,wav,flac}="cplay"
+
+# auto open web addresses
+alias -s {html,php,com,net,org,gov}="firefox3"
+
+# auto open regular files
+alias -s txt="vim"
+alias -s pdf="xpdf"
+
+## global pipe aliases
+alias -g M="| most" #	<< most is the best pager evar.
+alias -g G="| grep"
+alias -g E="| egrep"
+alias -g S="| sed -r -e"
+
+alias wcat='wget -q -O -'
+alias pacup='sudo pacman -Syu'
+alias start='dbus-launch startx'
+alias install='sudo pacman -S'
+alias remove='sudo pacman -Rscn'
+alias yaoup='sudo yaourt -Syu --aur'
+alias yaous='sudo yaourt -Ss'
+alias yinstall='sudo yaourt -S'
+alias yremove='sudo yaourt -Rsn'
+alias zetaf="sudo shutdown -h now"
+alias reboot="sudo reboot"
+alias svim="sudo vim"
+alias netcfg="netcfg2"
+alias battery="/home/gig/bin/battery.pl"
+alias ls="ls -hF -a --color=auto"

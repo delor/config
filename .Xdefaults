@@ -1,0 +1,65 @@
+Xcursor.theme: Vanilla-DMZ
+Xcursor.size: 22
+! urxvt settings & colors
+URxvt.imLocale: pl_PL.UTF-8
+
+URxvt*background:         black
+URxvt*transparent:        true
+URxvt*background:         rgba:0000/0000/0000/CCCC
+URxvt*depth:              32
+URxvt*foreground:         white
+!URxvt*foreground:         #88DF33
+URxvt*geometry:           80x25
+URxvt*font:               xft:DejaVu Sans Mono:antialias=true:pixelsize=12
+URxvt*boldFont:           xft:DejaVu Sans Mono:style=bold:antialias=true:pixelsize=12
+URxvt*italicFont:         xft:DejaVu Sans Mono:style=italic:antialias=true:pixelsize=12
+URxvt*boldItalicFont:     xft:DejaVu Sans Mono:style=bolditalic:antialias=true:pixelsize=12
+
+
+URxvt*inheritPixmap:	  0
+URxvt*borderless:         1
+!URxvt*internalBorder:     0
+!URxvt*externalBorder:     0
+URxvt*saveLines:          4000
+
+URxvt*scrollstyle:	  plain
+URxvt*scrollBar:	  0
+URxvt*scrollBar_right:	  true
+URxvt*secondaryScroll:	  true
+
+URxvt*shading:            25
+URxvt*termName:		  rxvt
+URxvt*loginShell:	  true
+URxvt*cutchars:		  "()*,<>[]{}|'
+URxvt*perl-lib:		  /usr/lib/urxvt/perl/
+URxvt*perl-ext-common:	  default,matcher
+URxvt*urlLauncher:	  firefox
+URxvt*matcher.button:	  1
+URxvt*matcher.pattern.1:  \bwww\.[\w-]+\.[\w./?&@#-]*[\w/-]
+URxvt*visualBell:	  0
+URxvt*keysym.C-r:         perl:matcher
+
+! Colors
+urxvt*cursorColor:        #919191
+urxvt*cursorColor2:       white
+urxvt*pointerColor:       #919191
+
+! Tango colors {{{
+URxvt.color0: #2E3436
+URxvt.color1: #CC0000
+URxvt.color2: #4E9A06
+URxvt.color3: #C4A000
+URxvt.color4: #3465A4
+URxvt.color5: #75507B
+URxvt.color6: #06989A
+URxvt.color7: #D3D7CF
+URxvt.color8: #555753
+URxvt.color9: #EF2929
+URxvt.color10: #8AE234
+URxvt.color11: #FCE94F
+URxvt.color12: #729FCF
+URxvt.color13: #AD7FA8
+URxvt.color14: #34E2E2
+URxvt.color15: #EEEEEC
+!}}}
+

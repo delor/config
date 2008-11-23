@@ -1,0 +1,225 @@
+#!/bin/zsh
+#
+# list contents of directory on every "cd"
+function chpwd
+{
+	integer ls_lines="$(ls -C | wc -l)"
+	if [[ $ls_lines -eq 0 ]]; then
+		echo No files found: Empty Directory 
+	else
+		ls -hl --color | more
+		echo "\e[1;32m --[\e[1;34m Dirs:\e[1;36m `ls -l | egrep \"^drw\" | wc -l` \e[1;32m|\e[1;35m Files: \e[1;31m`ls -l | egrep -v \"^drw\" | grep -v total | wc -l` \e[1;32m]--"
+	fi
+# source and create project environment
+	if [[ -f $PWD/.projectenv ]]; then
+		. $PWD/.projectenv
+	fi
+}
+
+function pastie {
+    url=$(curl http://pastie.caboo.se/pastes/create \
+        -H "Expect:" \
+        -F "paste[parser]=plain_text" \
+        -F "paste[body]=<-" \
+        -F "paste[authorization]=burger" \
+        -s -L -o /dev/null -w "%{url_effective}")
+    echo -n "$url" | xclip
+    echo "$url"
+}
+
+function aurget {
+    cd ~/abs
+    wget "http://aur.archlinux.org/packages/$1/$1.tar.gz" -O - | tar xzf -
+    cd $1
+}
+
+# copy files to git quickly
+function ctg() {
+    GITDIR=$HOME/gitconfig/config
+    SRCFILE=$*
+
+    if [ -z "$1" ]; then
+        echo "Usage: ctg [file]"
+    else
+        for i in $SRCFILE; do
+            echo "Copying $i to $GITDIR and adding it to GIT"
+            `cp -r $i $GITDIR/$i && cd $GITDIR && git add $i || return 0`
+        done
+    fi
+}
+
+# viewing man pages
+function man {
+    /usr/bin/man $* | col -bp | iconv -c | view -c 'set ft=man nomod nolist' -
+}
+
+# reload zshrc
+function src() {
+        autoload -U zrecompile
+                [[ -f ~/.zshrc ]] && zrecompile -p ~/.zshrc
+				for i in "$(find ~/.zsh/ -type f)"; do
+					[[ -f $i ]] && zrecompile -p $i
+					[[ -f $i.zwc.old ]] && rm -f $i.zwc.old
+				done
+                [[ -f ~/.zcompdump ]] && zrecompile -p ~/.zcompdump
+                [[ -f ~/.zcompdump ]] && zrecompile -p ~/.zcompdump
+                [[ -f ~/.zshrc.zwc.old ]] && rm -f ~/.zshrc.zwc.old
+                [[ -f ~/.zcompdump.zwc.old ]] && rm -f ~/.zcompdump.zwc.old
+                source ~/.zshrc
+}
+
+# hg rcs functions
+function hgs() { hg status $* }
+function hgl() { hg log $* }
+function hgc() { hg commit -m "$*" }
+function hgp() { hg push $* }
+function hga() { hg add $* }
+
+# git functions
+function ga() { git add $* }
+function gl() { git log $* }
+function gs() { git status $* }
+function gp() { git push $* }
+function gc() { git commit -m "$*" }
+
+# Found in the mailinglistarchive from Zsh (IIRC ~1996)
+# MISC: Search in the $HISTFILE and select result to execute
+function selhist()
+{
+	emulate -L zsh
+	local TAB=$'\t';
+	(( $# < 1 )) && {
+		echo "Usage: $0 command"
+		return 1
+	};
+	cmd=(${(f)"$(grep -w $1 $HISTFILE | sort | uniq | pr -tn)"})
+	print -l $cmd | less -F
+	echo -n "enter number of desired command [1 - $(( ${#cmd[@]} - 1 ))]: "
+	local answer
+	read answer
+	print -z "${cmd[$answer]#*$TAB}"
+}
+
+# query extended file attributes
+fattr() {
+	local val=$(getfattr -n user.$1 --only-values $REPLY 2>/dev/null) 
+	[[ -n $val && (( -z $2 || $val = $~2 )) ]]
+}
+
+# SEARCH: summarized google, ggogle, mggogle, agoogle and fm
+function search()
+{
+	case "$1" in
+		-g) ${BROWSER:-lynx} http://www.google.com/search\?q=$2
+		;;
+		-u) ${BROWSER:-lynx} http://groups.google.com/groups\?q=$2
+		;;
+		-m) ${BROWSER:-lynx} http://groups.google.com/groups\?selm=$2
+		;;
+		-a) ${BROWSER:-lynx} http://groups.google.com/groups\?as_uauthors=$2
+		;;
+		-c) ${BROWSER:-lynx} http://search.cpan.org/search\?query=$2\&mode=module
+		;;
+		-f) ${BROWSER:-lynx} http://freshmeat.net/search/\?q=$2\&section=projects
+		;;
+		-F) ${BROWSER:-lynx} http://www.filewatcher.com/\?q=$2
+		;;
+		-G) ${BROWSER:-lynx} http://www.rommel.stw.uni-erlangen.de/~fejf/cgi-bin/pfs-web.pl\?filter-search_file=$2
+		;;
+		-s) ${BROWSER:-lynx} http://sourceforge.net/search/\?type=soft\&q=$2
+		;;
+		-w) ${BROWSER:-lynx} http://de.wikipedia.org/wiki/$2
+		;;
+		-W) ${BROWSER:-lynx} http://en.wikipedia.org/wiki/$2
+		;;
+		-d) lynx -source "http://dict.leo.org?$2" | grep -i "TABLE.*/TABLE" | sed "s/^.*\(<TABLE.*TABLE>\).*$/<HTML><BODY>\1<\/BODY><\/HTML>/" | lynx -stdin -dump -width=$COLUMNS -nolist;
+		;;
+		*) 
+		  echo "Usage: $0 {-g | -u | -m | -a | -f | -c | -F | -s | -w | -W | -d}"
+		  echo "	-g:  Searching for keyword in google.com"
+		  echo "	-u:  Searching for keyword in groups.google.com"
+		  echo "	-m:  Searching for message-id in groups.google.com"
+		  echo "	-a:  Searching for Authors in groups.google.com"
+		  echo "	-c:  Searching for Modules on cpan.org."
+		  echo "	-f:  Searching for projects on Freshmeat."
+		  echo "	-F:  Searching for packages on FileWatcher."
+		  echo "	-G:  Gentoo file search."
+		  echo "	-s:  Searching for software on Sourceforge."
+		  echo "	-w:  Searching for keyword at wikipedia (german)."
+		  echo "	-W:  Searching for keyword at wikipedia (english)."
+		  echo "	-d:  Query dict.leo.org ;)"
+	esac
+}
+
+extract_archive () {
+    local old_dirs current_dirs lower
+    lower=${(L)1}
+    old_dirs=( *(N/) )
+    if [[ $lower == *.tar.gz || $lower == *.tgz ]]; then
+        tar xvzf $1
+    elif [[ $lower == *.gz ]]; then
+        gunzip $1
+    elif [[ $lower == *.tar.bz2 || $lower == *.tbz ]]; then
+        tar xvjf $1
+    elif [[ $lower == *.bz2 ]]; then
+        bunzip2 $1
+    elif [[ $lower == *.zip ]]; then
+        unzip $1
+    elif [[ $lower == *.rar ]]; then
+        unrar e $1
+    elif [[ $lower == *.tar ]]; then
+        tar xvf $1
+    elif [[ $lower == *.lha ]]; then
+        lha e $1
+    else
+        print "Unknown archive type: $1"
+        return 1
+    fi
+    # Change in to the newly created directory, and
+    # list the directory contents, if there is one.
+    current_dirs=( *(N/) )
+    for i in {1..${#current_dirs}}; do
+        if [[ $current_dirs[$i] != $old_dirs[$i] ]]; then
+            cd $current_dirs[$i]
+            break
+        fi
+    done
+}
+
+roll () {
+    FILE=$1
+    case $FILE in
+        *.tar.bz2) shift && tar cjf $FILE $* ;;
+        *.tar.gz) shift && tar czf $FILE $* ;;
+        *.tgz) shift && tar czf $FILE $* ;;
+        *.zip) shift && zip $FILE $* ;;
+        *.rar) shift && rar $FILE $* ;;
+    esac
+}
+
+function mkcd() { mkdir "$1" && cd "$1"; }
+function calc() { echo "$*" | bc; }
+function hex2dec { awk 'BEGIN { printf "%d\n",0x$1}'; }
+function dec2hex { awk 'BEGIN { printf "%x\n",$1}'; }
+function mktar() { 
+    if [ ! -z "$1" ]; then
+        tar czf "${1%%/}.tar.gz" "${1%%/}/"; 
+    else
+        echo "Please specify a file or directory"
+        exit 1
+    fi
+}
+
+function mkmine() { sudo chown -R ${USER} ${1:-.}; }
+
+# search the vim reference manual for keyword
+:h() {  vim --cmd ":silent help $@" --cmd "only"; }
+
+# sanitize - set file/directory owner and permissions to normal values (644/755)
+# Usage: sanitize <file>
+sanitize() {
+    chmod -R u=rwX,go=rX "$@"
+    chown -R ${USER}.users "$@"
+}
+
+#compdef '_files -g "*.gz *.tgz *.bz2 *.tbz *.zip *.rar *.tar *.lha"' extract_archive

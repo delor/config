@@ -1,0 +1,160 @@
+# THIS CONFIG RELIES ON 2 SCRIPTS, CPUSPEED AND CPUTEMP
+# YOUR SYSTEM MAY NOT REQUIRE THEM, REPLACE AS DESIRED
+
+# This is the number of times Conky will update before quitting.
+# Set to zero to run forever.
+total_run_times 0
+
+# maintain spacing between certain elements
+# use_spacer yes
+use_spacer right
+
+# set to yes if you want conky to be forked in the background
+background yes
+
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont Sans-8
+#xftfont Andale Mono-9
+#xftfont Clean-8
+#xftfont cubicfive10:pixelsize=8
+#xftfont squaredance10:pixelsize=14
+#xftfont swf!t_v02:pixelsize=10
+# Text alpha when using Xft
+xftalpha 1
+mail_spool $MAIL
+
+# Update interval in seconds
+update_interval 1.0
+
+# Create own window instead of using desktop (required in nautilus)
+own_window yes
+own_window_type root
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_transparent yes
+maximum_width 200
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 200 5
+
+# Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline  no # amplifies text
+
+# Draw borders around text
+draw_borders no
+
+# Stippled borders?
+stippled_borders 5
+
+# border margins
+border_margin 9
+
+# border width
+border_width 1
+
+# Default colors and also border colours
+default_color white
+default_shade_color 7b7b7b
+default_outline_color white
+
+# Heading colour
+color0 ffffff
+
+# Label colour
+color1 grey
+#color1 4F4F4F
+
+# Graph outline
+color2 ffffff
+
+# Graph colour one
+color3 e4e4e4
+
+# Graph colour two
+color4 ffffff
+
+color5 ffffff
+
+# Top colour one
+color6 ffffff
+# color6 e1e1e1
+
+# Top colour two
+color7 ffffff
+
+# Top colour three
+color8 ffffff
+
+# Top colour four
+color9 ffffff
+
+# Text alignment, other possible values are commented
+# Values:top_left|top_right bottom_left|bottom_right
+alignment bottom_right
+
+# Gap between borders of screen and text
+gap_x 5
+gap_y 5
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+
+#${if_running banshee}
+#${exec `~/Scripts/banshee.sh init`}
+#${color0}${font impact:bold size=20}MUSIC$font
+#${color1}Artist: ${alignr}$color${execi 10 ~/Scripts/conky/banshee.sh artist}
+#${color1}Title:  ${alignr}$color${execi 10 ~/Scripts/conky/banshee.sh title}
+#${color1}Album:  ${alignr}$color${execi 10 ~/Scripts/conky/banshee.sh album}
+#${color0}${execibar 10 ~/Scripts/banshee.sh progress}
+#$else
+#${exec `~/Scripts/banshee.sh`}
+#$endif
+
+
+
+# stuff after 'TEXT' will be formatted on screen
+# ${color1}Weather: ${alignr}$color${texeci 600 ~/Scripts/conky/weather.sh "30043"}
+# ${color1}Gmail:                                                    $color${texeci 600 perl ~/Scripts/conky/gmail.pl n}
+TEXT
+${color0}${font openlogos-archdraft:size=40}B${font impact:bold size=20}  ARCH LINUX$font
+${color1}Date:    ${alignr}$color${exec date +"%a, %d %b, %H:%M"}
+${color1}Uptime:  ${alignr}$color${uptime}
+${color1}Load:    ${alignr}$color${loadavg 1} ${loadavg 2} ${loadavg 3}
+${color0}${font impact:bold size=20}PROCESSES$font
+${color1}CPU: $color$cpu% ${alignr}${acpitemp}°C
+${color1}${cpugraph 20,200 ffffff ffffff}
+
+${color6}${top name 1}${alignr}${top cpu 1}%
+${color7}${top name 2}${alignr}${top cpu 2}%
+${color8}${top name 3}${alignr}${top cpu 3}%
+
+${color0}${font impact:bold size=20}MEMORY$font
+${color1}RAM: ${alignr}$color$memperc%
+${color2}${membar 3,200}${color}
+${color1}Swap: ${alignr}$color$swapperc%
+${color2}${swapbar 3,200}${color} ${alignr}$swap/$swapmax
+
+${color0}${font impact:bold size=20}FILESYSTEM$font$color
+${color1}Root: ${alignr}$color${fs_free_perc /}%
+${color2}${fs_bar 3,200 /}
+${color1}Home: ${alignr}$color${fs_free_perc /home}%
+${color2}${fs_bar 3,200 /home}
+
+${color1}Write: $color${diskio_write /dev/sda} ${alignr}${color1}Read: $color${diskio_read /dev/sda}
+${color1}${diskiograph_write /dev/sda 20,99 ffffff ffffff} ${diskiograph_read /dev/sda 20,99
+ffffff ffffff}
+
+${color0}${font impact:bold size=20}NETWORK$font$color
+${color1}Down: $color${downspeed eth0}KiB/s ${alignr}${color1}Up: $color${upspeed eth0}KiB/s
+${color1}${downspeedgraph eth0 20,99 ffffff ffffff} ${upspeedgraph eth0 20,99 ffffff ffffff}
